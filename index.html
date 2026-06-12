@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial‑scale=1.0">
+  <title>Vehicle Rental Management System</title>
+  <link rel="stylesheet" href="style/stylesheet.css">
+</head>
+<body onload="setup()">
+  <script src="src/model.js"></script>
+  <script src="src/view.js"></script>
+  <script src="src/controller.js"></script>
+  <header>
+    <p id="title">Vehicle Rental Management System</p>
+  </header>
+  <nav>
+    <ul>
+      <li><a href="javascript:changeView('customers')">Customer Management</a></li>
+      <li><a href="javascript:changeView('vehicles')">Vehicle Management</a></li>
+      <li><a href="javascript:changeView('search')">Vehicle Search</a></li>
+      <li><a href="javascript:changeView('rentals')">Rentals</a></li>
+      <li><a href="javascript:changeView('reservations')">Reservations</a></li>
+    </ul>
+  </nav>
+  <main>
+
+    <!-- Welcome Section -->
+    <div id="welcome" class="welcomeSection"> 
+      <h2>Welcome to Vehicle Rental Management System</h2>
+      <img src="images/vrms-logo.png" alt="Vehicle Rental Management System Logo" class="welcome-logo">
+      <p class ="welcome-text">
+        Your all-in-one solution for managing vehicle rentals, customers, and reservations.<br>
+        Please navigate different sections above to begin.
+      </p>
+    </div>
+
+    <!-- Customers Section -->
+    <div id="customers">
+      <h2>Customer Management</h2>
+      <p>Register customer, update details and deactivate customers.</p>
+      <div class="basicContainer">
+        <form id="customerForm">
+          <label for="customerName">Full Name:</label>
+          <input type="text" id="customerName" placeholder="Your full name" required>
+
+          <label for="customerEmail">Email:</label>
+          <input type="email" id="customerEmail" placeholder="Your email address" required>
+
+          <label for="customerPhone">Phone Number:</label>
+          <input type="text" id="customerPhone" placeholder="Your phone number" required>
+
+          <label for="customerAddress">Address:</label>
+          <input type="text" id="customerAddress" placeholder="Your address">
+
+          <label for="customerType">Type:</label>
+          <select id="customerType" required>
+            <option value="" hidden>Select Type</option>
+            <option value="Private">Private</option>
+            <option value="Corporate">Corporate</option>
+          </select>
+
+          <button type="submit" class="submitButton">Register Customer</button>
+        </form>
+      </div>
+      <div id="customerTableContainer">
+        <h3>Current Customers</h3>
+        <table id="customerTable">
+          <thead>
+            <tr>
+              <th>Customer ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Type</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows dynamically inserted -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Vehicles Section -->
+    <div id="vehicles" style="display:none;">
+      <h2>Vehicle Management</h2>
+      <p>Add vehicles, update vehicle info, set availability and remove vehicles.</p>
+      <div class="basicContainer">
+        <form id="vehicleForm">
+          <label for="vehicleMake">Make:</label>
+          <input type="text" id="vehicleMake" required placeholder="e.g., Mazda">
+
+          <label for="vehicleModel">Model:</label>
+          <input type="text" id="vehicleModel" required placeholder="e.g., Axela">
+
+          <label for="vehicleYear">Year:</label>
+            <select id="vehicleYear" required>
+             <option value="" disabled selected hidden>Select Year</option>
+            </select>
+                <script>
+                // Populate years dynamically (2000–2025)
+                const yearSelect = document.getElementById('vehicleYear');
+                for (let y = 2025; y >= 2000; y--) {
+                    const option = document.createElement('option');
+                    option.value = y;
+                    option.textContent = y;
+                    yearSelect.appendChild(option);
+                }
+                </script>
+
+          <label for="vehicleReg">Registration Number:</label>
+          <input type="text" id="vehicleReg" placeholder="e.g.,KMW459" required>
+
+          <label for="vehicleType">Type:</label>
+          <input type="text" id="vehicleType" placeholder="e.g., Hybrid" required>
+
+          <label for="vehicleRate">Daily Rate:</label>
+          <input type="number" id="vehicleRate" placeholder="e.g., 49.99" step="0.01" required>
+
+          <label for="vehicleMileage">Mileage:</label>
+          <input type="text" id="vehicleMileage" placeholder="e.g., 45,000" required>
+
+          <label for="vehicleLocation">Location:</label>
+          <input type="text" id="vehicleLocation" placeholder="e.g., Christchurch "required>
+
+          <button type="submit" class="submitButton">Add Vehicle</button>
+        </form>
+      </div>
+      <div id="vehicleTableContainer">
+        <h3>Current Vehicles</h3>
+        <table id="vehicleTable">
+          <thead>
+            <tr>
+              <th>Vehicle ID</th><th>Make</th><th>Model</th><th>Year</th><th>Reg #</th><th>Type</th><th>Rate</th><th>Mileage</th><th>Location</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows dynamically inserted -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Vehicle Search Section -->
+    <div id="search" style="display:none;">
+      <h2>Vehicle Search</h2>
+      
+      <div class="searchHeader">
+        <div class="searchBars">
+          <input type="text" id="searchType" placeholder="Search by Type">
+          <input type="text" id="searchMake" placeholder="Search by Make">
+          <input type="text" id="searchModel" placeholder="Search by Model">
+          <input type="text" id="searchLocation" placeholder="Search by Location">
+        </div>
+        <button type="button" class="submitButton" id="vehicleSearchInput">Search</button>
+      </div>
+      <div id="searchResultsContainer">
+        <h3>Results</h3>
+        <table id="vehicleSearchResults">
+          <thead>
+            <tr>
+              <th>Vehicle ID</th><th>Make</th><th>Model</th><th>Year</th><th>Type</th><th>Location</th><th>Rate</th><th>Available</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows dynamically inserted -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+   <!-- Rentals Section -->
+<div id="rentals" style="display:none;">
+  <h2>Welcome to Rentals</h2>
+  <p>Rent Available Vehicles, Check Active Rentals, Returned Vehicles and Manage Rental Transactions </p>
+
+  <h3>Available Vehicles for Rent</h3>
+  <div class="table-container">
+    <table id="availableRentalsTable">
+      <thead>
+        <tr>
+          <th>Vehicle ID</th>
+          <th>Make</th>
+          <th>Model</th>
+          <th>Type</th>
+          <th>Location</th>
+          <th>Daily Rate ($)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows dynamically inserted via JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Rent Form (appears when user clicks Rent) -->
+  <div id="rentFormContainer" class="basicContainer" style="display:none;">
+    <form id="rentalForm">
+      <h3>Assign Vehicle to Customer</h3>
+
+      <label for="rentCustomerSelect">Select Active Customer:</label>
+      <select id="rentCustomerSelect" required>
+        <option value="" disabled selected hidden>Select Customer</option>
+        <!-- Populated dynamically -->
+      </select>
+
+      <label for="rentDate">Rental Date:</label>
+      <input type="date" id="rentDate" required>
+
+      <label for="plannedReturnDate">Planned Return Date:</label>
+      <input type="date" id="plannedReturnDate" required>
+
+      <input type="hidden" id="rentVehicleId">
+      <button type="submit" class="submitButton">Confirm Rental</button>
+      <button type="button" id="cancelRentButton">Cancel Rent</button>
+    </form>
+  </div>
+
+  <h3>Active Rentals</h3>
+  <div class="table-container">
+    <table id="rentalTable">
+      <thead>
+        <tr>
+          <th>Rental ID</th>
+          <th>Customer</th>
+          <th>Vehicle</th>
+          <th>Rental Date</th>
+          <th>Return Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Active rentals dynamically inserted -->
+      </tbody>
+    </table>
+  </div>
+
+
+<!-- Returned Vehicles -->
+  <h3>Returned Vehicles</h3>
+  <div class="table-container">
+    <table id="returnedVehiclesTable">
+      <thead>
+        <tr>
+          <th>Rental ID</th>
+          <th>Customer</th>
+          <th>Vehicle</th>
+          <th>Actual Return Date</th>
+          <th>Total Fee ($)</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+ <!-- Reservations Section -->
+    <div id="reservations" style="display:none;">
+    <h2>Reservations</h2>
+    <p>Create Reservation, Cancel Reservation and Check Reservation Status</p>
+
+    <h3>Available Vehicles for Reservation</h3>
+    <div class="table-container">
+        <table id="availableReservationsTable">
+        <thead>
+            <tr>
+            <th>Vehicle ID</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Daily Rate ($)</th>
+            <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows dynamically inserted via JS -->
+        </tbody>
+        </table>
+    </div>
+
+    <!-- Reserve Form (appears when user clicks Reserve) -->
+    <div id="reserveFormContainer" class="basicContainer" style="display:none;">
+      <form id="reserveForm">
+        <h3>Reserve Vehicle for Customer</h3>
+
+        <label for="reserveCustomerSelect">Select Active Customer:</label>
+        <select id="reserveCustomerSelect" required>
+          <option value="" disabled selected hidden>Select Customer</option>
+          <!-- Populated dynamically -->
+        </select>
+
+        <label for="reserveDate">Reservation Date:</label>
+        <input type="date" id="reserveDate" required>
+
+        <input type="hidden" id="reserveVehicleId">
+          <div class="button-row">
+            <button type="submit" class="submitButton">Confirm Reservation</button>
+            <button type="button" id="cancelReserveButton" class="cancelButton">Cancel</button>
+          </div>
+      </form>
+    </div>
+
+
+    <h3>Current Reservations</h3>
+    <div class="table-container">
+        <table id="reservationTable">
+        <thead>
+            <tr>
+            <th>Reservation ID</th>
+            <th>Customer</th>
+            <th>Vehicle</th>
+            <th>Reservation Date</th>
+            <th>Status</th>
+            <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Reservation records dynamically inserted -->
+        </tbody>
+        </table>
+    </div>
+    </div>
+
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Vehicle Rental Management System | Website by Sunil Kafley</p>
+  </footer>
+
+
+</body>
+</html>
